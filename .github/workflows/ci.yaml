@@ -31,5 +31,6 @@ jobs:
       - name: Install test dependencies.
         run: sudo apt install ansible -y
       - name: Run ansible-playbook linter.
+        working-directory: ansible
         run: |
           ansible-playbook ansible/playbooks/*.yaml --syntax-check
