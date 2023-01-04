@@ -1,0 +1,15 @@
+---
+- name: Provision nodes to use static ips and hostnames according to inventory.yaml
+  hosts: nodes
+  pre_tasks:
+    # apt updates
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+        upgrade: true
+        update_cache: true
+        cache_valid_time: 3600
+  roles:
+    # configure static ips based on groupvars
+    - staticip
+    - hostname

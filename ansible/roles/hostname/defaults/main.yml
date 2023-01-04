@@ -1,0 +1,3 @@
+---
+# defaults file for hostname
+static_hostname: node

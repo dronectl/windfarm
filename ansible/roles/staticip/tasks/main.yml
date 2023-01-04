@@ -1,0 +1,13 @@
+---
+- name: Configure static IP address
+  become: true
+  lineinfile:
+    path: /etc/dhcpcd.conf
+    line: "interface eth0\nstatic ip_address={{ static_ip }}/{{ netmask }}\nstatic routers={{ gateway }}"
+    create: true
+
+- name: Restart dhcpcd service
+  become: true
+  service:
+    name: dhcpcd
+    state: restarted
