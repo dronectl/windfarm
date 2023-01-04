@@ -1,0 +1,35 @@
+---
+name: ci
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  yamllint:
+    name: yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out the codebase
+        uses: actions/checkout@v2
+      - name: setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: install test dependencies
+        run: python3 -m pip install yamllint
+      - name: lint all yaml files
+        run: yamllint .
+  ansible-lint:
+    name: ansible-lint
+    needs: yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+      - name: Install test dependencies.
+        run: sudo apt install ansible -y
+      - name: Run ansible-playbook linter.
+        run: |
+          ansible-playbook ansible/playbooks/*.yaml --syntax-check
