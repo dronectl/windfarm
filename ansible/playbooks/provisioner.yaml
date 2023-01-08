@@ -1,15 +1,49 @@
 ---
 - name: Provision nodes to use static ips and hostnames according to inventory.yaml
   hosts: nodes
-  pre_tasks:
-    # apt updates
-    - name: Update and upgrade apt packages
-      become: true
-      apt:
-        upgrade: true
-        update_cache: true
-        cache_valid_time: 3600
-  roles:
+  # pre_tasks:
+  #   # apt updates
+  #   - name: Update and upgrade apt packages
+  #     become: true
+  #     apt:
+  #       upgrade: true
+  #       update_cache: true
+  #       cache_valid_time: 3600
+  
+  tasks:
+    - name: Test for raspberry pi /proc/cpuinfo
+      command: grep -E "Raspberry Pi|BCM2708|BCM2709|BCM2835|BCM2836" /proc/cpuinfo
+      register: grep_cpuinfo_raspberrypi
+      failed_when: false
+      changed_when: false
+
+    - name: Test for raspberry pi /proc/device-tree/model
+      command: grep -E "Raspberry Pi" /proc/device-tree/model
+      register: grep_device_tree_model_raspberrypi
+      failed_when: false
+      changed_when: false
+
+    - name: Set raspberry_pi fact to true
+      set_fact:
+        raspberry_pi: true
+      when:
+        grep_cpuinfo_raspberrypi.rc == 0 or grep_device_tree_model_raspberrypi.rc == 0
+
+    - name: Set detected_distribution to Raspbian
+      set_fact:
+        detected_distribution: Raspbian
+      when: >
+        raspberry_pi|default(false) and
+        ( ansible_facts.lsb.id|default("") == "Raspbian" or
+          ansible_facts.lsb.description|default("") is match("[Rr]aspbian.*") )
+
+    - name: Print the value of raspberry_pi and detected_distribution
+      debug:
+        msg: "State: {{ raspberry_pi }}  {{ detected_distribution }}"
+
+
+
+  # roles:
     # configure static ips based on groupvars
-    - staticip
-    - hostname
+    # - staticip
+    # - hostname
