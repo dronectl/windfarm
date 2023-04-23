@@ -1,6 +1,7 @@
 ---
 extends: default
-ignore: vault.yaml
+ignore: |
+  k3s/monitoring
 rules:
   line-length:
     max: 120
