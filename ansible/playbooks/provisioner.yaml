@@ -1,15 +1,6 @@
 ---
 - name: Provision nodes to use static ips and hostnames according to inventory.yaml
   hosts: nodes
-  # pre_tasks:
-  #   # apt updates
-  #   - name: Update and upgrade apt packages
-  #     become: true
-  #     apt:
-  #       upgrade: true
-  #       update_cache: true
-  #       cache_valid_time: 3600
-  
   tasks:
     - name: Test for raspberry pi /proc/cpuinfo
       command: grep -E "Raspberry Pi|BCM2708|BCM2709|BCM2835|BCM2836" /proc/cpuinfo
@@ -40,10 +31,3 @@
     - name: Print the value of raspberry_pi and detected_distribution
       debug:
         msg: "State: {{ raspberry_pi }}  {{ detected_distribution }}"
-
-
-
-  # roles:
-    # configure static ips based on groupvars
-    # - staticip
-    # - hostname
