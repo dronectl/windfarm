@@ -3,16 +3,26 @@
 
 Modified: 2023-01
 
-Micro-service deployments and automation for aggregation and analysis of propulsion tests.
+Micro-service deployment manifests and automation for in-house test infrastructure. 
 
-# Quickstart
+# Hardware
+The in-house servers are 7 RPi CM3B+ modules on a TuringPi v1.1 Motherboard.
+
+# Installing K3S
 1. Install `ansible` for your platform following the instructions [here](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
-2. Copy the sample `ansible/inventory/example.inventory.yaml` file and name it `inventory.yaml`. Update the appropriate fields to describe the desired topology
+2. Copy the sample inventory directory and update the appropriate fields in the `inventory.yaml` to describe the desired topology
 ```bash
-cp ansible/inventory/example.inventory.yaml ansible/inventory/inventory.yaml
+cp -R ansible/inventory/sample ansible/inventory/my-cluster
 ```
-3. Provision the turingpi cluster. You will need to enter the admin password to run the provisioner
+3. Install k3s on the turingpi cluster with the `k3s.yml` playbook.
 ```
-ansible-playbook playbooks/provisioner.yaml -K
+ansible-playbook playbooks/k3s.yml -i inventory/sample/inventory.yaml
 ```
-4. Install k3s following the instructions [here](https://github.com/k3s-io/k3s-ansible)
+
+Teardown the k3s on the turingpi cluster with the `reset-k3s.yml` playbook.
+```
+ansible-playbook playbooks/reset-k3s.yml -i inventory/sample/inventory.yaml
+```
+
+# Monitoring Deployment
+The cluster monitoring deployments are adapted from [here](https://github.com/carlosedp/cluster-monitoring). Follow the instructions in the [README](k3s/monitoring/Readme.md) for installation on a K3S cluster.

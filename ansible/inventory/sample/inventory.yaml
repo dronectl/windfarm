@@ -1,0 +1,14 @@
+# TuringPi Server
+---
+all:
+  children:
+    master:
+      hosts:
+        192.168.2.50:
+    node:
+      hosts:
+        192.168.2.[51:57]:
+    k3s_cluster:
+      children:
+        master:
+        node:
